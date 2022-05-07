@@ -1,0 +1,94 @@
+from itertools import permutations
+import copy
+
+def solution(expression):
+    expression = list(expression)
+    nums = []
+    opers = []
+    oper_types = []
+    now = 0
+    for i in range(len(expression)):
+        if i == len(expression) - 1:
+            num = int("".join(expression[now:i + 1]))
+            nums.append(num)
+        if expression[i].isdigit():
+            continue
+        else:
+            opers.append(expression[i])
+            num = int("".join(expression[now:i]))
+            nums.append(num)
+            now = i + 1
+            if expression[i] not in oper_types:
+                oper_types.append(expression[i]) 
+    
+    cands = list(permutations(oper_types, len(oper_types)))
+    answer = -1
+    for oper in cands:
+        temp_nums = copy.deepcopy(nums)
+        temp_opers = copy.deepcopy(opers)
+        for op in oper:
+            i = 0
+            while i < len(temp_opers):
+                if op == temp_opers[i]:
+                    if op == "+":
+                        temp_nums[i] = temp_nums[i] + temp_nums[i + 1]
+                        temp_nums.pop(i + 1)
+                        temp_opers.pop(i)
+                        i -= 1
+                    elif op == "-":
+                        temp_nums[i] = temp_nums[i] - temp_nums[i + 1]
+                        temp_nums.pop(i + 1)
+                        temp_opers.pop(i)
+                        i -= 1
+                    elif op == "*":
+                        temp_nums[i] = temp_nums[i] * temp_nums[i + 1]
+                        temp_nums.pop(i + 1)
+                        temp_opers.pop(i)
+                        i -= 1
+                i += 1
+        answer = max(answer, abs(temp_nums[0]))
+    return answer
+   
+=====================================================================================================   
+   
+from itertools import permutations
+
+def operation(num1, num2, op):
+    if op == '+':
+        return str(int(num1) + int(num2))
+    if op == '-':
+        return str(int(num1) - int(num2))
+    if op == '*':
+        return str(int(num1) * int(num2))
+    
+def calculate(exp,op):
+    array=[]
+    tmp=""
+    for i in exp:
+        if i.isdigit()==True:
+            tmp+=i
+        else:
+            array.append(tmp)
+            array.append(i)
+            tmp=""
+    array.append(tmp)
+    
+    for o in op:
+        stack=[]
+        while len(array)!=0:
+            tmp=array.pop(0)
+            if tmp==o:
+                stack.append(operation(stack.pop(), array.pop(0), o))
+            else:
+                stack.append(tmp)
+        array=stack
+            
+    return abs(int(array[0]))
+
+def solution(expression):
+    op = ['+', '-', '*']
+    op = list(permutations(op, 3))
+    result=[]
+    for i in op:
+        result.append(calculate(expression, i))
+    return max(result)
