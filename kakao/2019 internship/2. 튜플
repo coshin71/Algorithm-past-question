@@ -1,0 +1,12 @@
+def solution(s):
+    data = s[2:-2].split("},{")
+    data.sort(key=lambda x: len(x))
+
+    answer = []
+    for nums in data:
+        array = nums.split(',')
+        for num in array:
+            if int(num) not in answer:
+                answer.append(int(num))
+                
+    return answer
