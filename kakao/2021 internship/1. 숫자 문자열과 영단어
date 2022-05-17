@@ -1,0 +1,26 @@
+def solution(s):
+    answer = ""
+    prefix_list = ["ze", "on", "tw", "th", "fo", "fi", "si", "se", "ei", "ni"]
+    length_list = [4, 3, 3, 5, 4, 4, 3, 5, 5, 4]
+    index = 0
+    while index < len(s):
+        if 48 <= ord(s[index]) <= 57:
+            answer += s[index]
+            index += 1
+        else:
+            prefix = s[index:index + 2]
+            prefix_index = prefix_list.index(prefix)
+            answer += str(prefix_index)
+            index += length_list[prefix_list.index(prefix)]
+    answer = int(answer)
+    return answer
+    
+===========================================================================================
+
+num_dic = {"zero":"0", "one":"1", "two":"2", "three":"3", "four":"4", "five":"5", "six":"6", "seven":"7", "eight":"8", "nine":"9"}
+
+def solution(s):
+    answer = s
+    for key, value in num_dic.items():
+        answer = answer.replace(key, value)
+    return int(answer)
