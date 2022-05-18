@@ -33,6 +33,21 @@ def possible(place, x, y):
             
 def solution(places):
     answer = []
+    for data in places:
+        place = []
+        check = True
+        for d in data:
+            place.append(list(d))
+        for i in range(5):
+            for j in range(5):
+                if place[i][j] == "P" and check == True:
+                    if possible(place, i, j) == False:
+                        check = False
+        if check == False:
+            answer.append(0)
+        else:
+            answer.append(1)
+    return answer
     
 ======================================================================================================
 
