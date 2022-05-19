@@ -1,0 +1,108 @@
+from collections import deque
+
+def up_index(answer, index, x):
+    cnt = 0
+    index -= 1
+    while True:
+        if answer[index] == 'O':
+            cnt += 1
+        if cnt == x: 
+            break
+        index -= 1
+    return index
+    
+def down_index(answer, index, x):
+    cnt = 0
+    index += 1
+    while True:
+        if answer[index] == 'O':
+            cnt += 1
+        if cnt == x: 
+            break
+        index += 1
+    return index
+
+def recover_row(answer, recycle_bin):
+    answer[recycle_bin.pop()] = 'O'
+
+def delete_row(answer, recycle_bin, index):
+    recycle_bin.append(index)
+    answer[index] = 'X'
+    temp = index
+    for i in range(index, len(answer)):
+        if answer[i] == 'O':
+            index = i
+            break
+    if index == temp:
+        for i in range(index, -1, -1):
+            if answer[i] == 'O':
+                index = i
+                break
+    return index
+    
+def solution(n, k, cmd):
+    index = k
+    recycle_bin = deque()
+    answer = ['O'] * n
+    for c in cmd:
+        if c.startswith('U'):
+            index = up_index(answer, index, int(c[2:]))
+        elif c.startswith('D'):
+            index = down_index(answer, index, int(c[2:]))
+        elif c.startswith('C'):
+            index = delete_row(answer, recycle_bin, index)
+        elif c.startswith('Z'):
+            recover_row(answer, recycle_bin)
+    answer = ''.join(answer)
+    return answer
+
+========================================================================================
+
+def solution(n, k, cmd):
+    cur = k
+    table = { i:[i - 1, i + 1] for i in range(n) }
+    answer = ['O'] * n
+    table[0] = [None, 1]
+    table[n - 1] = [n - 2, None]
+    stack = []
+    for c in cmd:
+        # 삭제
+        if c == "C":
+            answer[cur] = 'X'
+            prev, next = table[cur]
+            stack.append([prev, cur, next])
+            if next == None:
+                cur = table[cur][0]
+            else:
+                cur = table[cur][1]
+            if prev == None:
+                table[next][0] = None
+            elif next == None:
+                table[prev][1] = None
+            else:
+                table[prev][1] = next
+                table[next][0] = prev
+
+        elif c == "Z":
+            # 복구
+            prev, now, next = stack.pop()
+            answer[now] = 'O'
+            if prev == None:
+                table[next][0] = now
+            elif next == None:
+                table[prev][1] = now
+            else:
+                table[next][0] = now
+                table[prev][1] = now
+
+        else:
+            # 커서 이동
+            c1, c2 = c.split(' ')
+            c2 = int(c2)
+            if c1 == 'D':
+                for _ in range(c2):
+                    cur = table[cur][1]
+            else:
+                for _ in range(c2):
+                    cur = table[cur][0]
+    return ''.join(answer)
