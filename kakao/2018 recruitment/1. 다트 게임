@@ -1,0 +1,45 @@
+def solution(dartResult):
+    result = []
+    now = 0
+    bonus = {"S":1, "D":2, "T":3}
+    for i in range(0, len(dartResult)):
+        if dartResult[i].isalpha():
+            if i == len(dartResult) - 1:
+                result.append(int(dartResult[now:i]) ** bonus[dartResult[i]])
+            elif dartResult[i + 1] == "*":
+                if len(result) >= 1:
+                    result[-1] = result[-1] * 2
+                result.append(int(dartResult[now:i]) ** bonus[dartResult[i]] * 2)
+                now = i + 2
+            elif dartResult[i + 1] == "#":
+                result.append(int(dartResult[now:i]) ** bonus[dartResult[i]] * -1)
+                now = i + 2
+            elif dartResult[i + 1].isdigit():
+                result.append(int(dartResult[now:i]) ** bonus[dartResult[i]])
+                now = i + 1
+    return sum(result)
+
+=======================================================================================================
+
+def solution(dartResult):
+    point = []
+    answer = []
+    dartResult = dartResult.replace('10','k')
+    point = ['10' if i == 'k' else i for i in dartResult]
+    print(point)
+
+    i = -1
+    sdt = ['S', 'D', 'T']
+    for j in point:
+        if j in sdt :
+            answer[i] = answer[i] ** (sdt.index(j)+1)
+        elif j == '*':
+            answer[i] = answer[i] * 2
+            if i != 0 :
+                answer[i - 1] = answer[i - 1] * 2
+        elif j == '#':
+            answer[i] = answer[i] * (-1)
+        else:
+            answer.append(int(j))
+            i += 1
+    return sum(answer)
