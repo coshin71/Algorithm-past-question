@@ -1,0 +1,28 @@
+def solution(n, arr1, arr2):
+    decoded_arr1 = [[0] * n for _ in range(n)]
+    decoded_arr2 = [[0] * n for _ in range(n)]    
+    for i, num in enumerate(arr1):
+        for j in range(n - 1, -1, -1):
+            if num // (2 ** j) == 1:
+                decoded_arr1[i][n - j - 1] = 1
+                num %= (2 ** j)
+            else:
+                decoded_arr1[i][n - j - 1] = 0
+    for i, num in enumerate(arr2):
+        for j in range(n - 1, -1, -1):
+            if num // (2 ** j) == 1:
+                decoded_arr2[i][n - j - 1] = 1
+                num %= (2 ** j)
+            else:
+                decoded_arr2[i][n - j - 1] = 0
+                
+    answer = []
+    for i in range(n):
+        temp = ""
+        for j in range(n):
+            if decoded_arr1[i][j] == 1 or decoded_arr2[i][j] == 1:
+                temp += "#"
+            else:
+                temp += " "
+        answer.append(temp)
+    return answer
