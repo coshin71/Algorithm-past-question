@@ -1,0 +1,66 @@
+def check_possible(i, j, m, n, new_board):
+    case = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
+           "T", "U", "V", "W", "X", "Y", "Z"]
+    if new_board[i][j] in case and new_board[i][j] == new_board[i + 1][j] and new_board[i][j] == new_board[i][j + 1] and new_board[i][j] == new_board[i + 1][j + 1]:
+        return True
+    return False
+
+def fall_block(m, n, new_board):
+    for j in range(n):
+        temp = [data[j] for data in new_board]
+        temp = temp[::-1]
+        while True:
+            if "#" in temp:
+                temp.remove("#")
+            else:
+                break
+        for i in range(len(temp), m):
+            temp.append("#")
+        for i in range(m):
+            new_board[-i - 1][j] = temp[i]
+        
+def solution(m, n, board):
+    new_board = []
+    for data in board:
+        new_board.append(list(data))
+    result = 0
+    while True:
+        remove_cand = set()
+        for i in range(m - 1):
+            for j in range(n - 1):
+                if check_possible(i, j, m, n, new_board):
+                    remove_cand.add((i, j))
+                    remove_cand.add((i + 1, j))
+                    remove_cand.add((i, j + 1))
+                    remove_cand.add((i + 1, j + 1))
+        result += len(remove_cand)
+        if len(remove_cand) == 0:
+            return result
+        for i, j in remove_cand:
+            new_board[i][j] = "#"
+        fall_block(m, n, new_board)
+        
+============================================================================
+
+def pop_num(b, m, n):
+    pop_set = set()
+    # search
+    for i in range(1, n):
+        for j in range(1, m):
+            if b[i][j] == b[i-1][j-1] == b[i-1][j] == b[i][j-1] != '_':
+                pop_set |= set([(i, j), (i-1, j-1), (i-1, j), (i, j-1)])
+    # set_board
+    for i, j in pop_set:
+        b[i][j] = 0        
+    for i, row in enumerate(b):
+        empty = ['_'] * row.count(0)
+        b[i] = empty + [block for block in row if block != 0]
+    return len(pop_set)
+     
+def solution(m, n, board):
+    count = 0
+    b = list(map(list,zip(*board)))
+    while True:
+        pop = pop_num(b, m, n)
+        if pop == 0: return count
+        count += pop
