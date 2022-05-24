@@ -1,0 +1,52 @@
+from collections import defaultdict
+
+def solution(str1, str2):
+    str1 = str1.lower()
+    str2 = str2.lower()
+    str1_set = defaultdict(int)
+    str2_set = defaultdict(int)
+    for i in range(len(str1) - 1):
+        if str1[i].isalpha() and str1[i + 1].isalpha():
+            str1_set["".join(str1[i:i + 2])] += 1
+    for i in range(len(str2) - 1):
+        if str2[i].isalpha() and str2[i + 1].isalpha():
+            str2_set["".join(str2[i:i + 2])] += 1
+    intersection_set = defaultdict(int)
+    union_set = defaultdict(int)
+    for data in list(str1_set.keys()) + list(str2_set.keys()):
+        if str1_set[data] > str2_set[data]:
+            union_set[data] = str1_set[data]
+            intersection_set[data] = str2_set[data]
+        elif str1_set[data] < str2_set[data]:
+            union_set[data] = str2_set[data]
+            intersection_set[data] = str1_set[data]
+        else:
+            union_set[data] = str1_set[data]
+            intersection_set[data] = str1_set[data]
+    if sum(union_set.values()) == 0:
+        return 65536
+    return int(sum(intersection_set.values()) / sum(union_set.values()) * 65536)
+    
+    ===============================================================================================
+    
+    def checklist(strin):
+    strin, arr, s = [c for c in strin], [], []
+    for b in range(len(strin) - 1):
+        s = [strin[b] , strin[b + 1]]
+        if ''.join(s).isalpha():
+            arr.append(s)
+    return arr
+
+def solution(str1, str2):
+    str1, str2 = checklist(str1.lower()), checklist(str2.lower())
+    union, intersection = [], []
+    if len(str1) > len(str2):
+        str1, str2 = str2, str1
+    for a in str1:
+        if a in str2:
+            str2.remove(a)
+            intersection.append(a)
+    union = str1 + str2
+    if len(union) == 0:
+        return 65536
+    return int((len(intersection) / len(union)) * 65536)
