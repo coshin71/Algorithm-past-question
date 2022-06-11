@@ -1,0 +1,43 @@
+from itertools import combinations
+
+def solution(orders, course):
+    cand = []
+    for order in orders:
+        temp = list(order)
+        temp.sort()
+        for c in course:
+            cand += list(combinations(temp, c))
+    cnt = [0] * 11
+    done = []
+    for c in cand:
+        if c in done:
+            continue
+        done.append(c)
+        if cand.count(c) >= cnt[len(c)]:
+            cnt[len(c)] = cand.count(c)
+    result = []
+    for c in cand:
+        if "".join(c) in result or len(c) not in course:
+            continue
+        if cand.count(c) == cnt[len(c)] and cnt[len(c)] >= 2:
+            result.append("".join(c))
+    result.sort()
+    return result
+
+=====================================================================================================
+
+import collections
+import itertools
+
+def solution(orders, course):
+    result = []
+
+    for course_size in course:
+        order_combinations = []
+        for order in orders:
+            order_combinations += itertools.combinations(sorted(order), course_size)
+
+        most_ordered = collections.Counter(order_combinations).most_common()
+        result += [ k for k, v in most_ordered if v > 1 and v == most_ordered[0][1] ]
+
+    return [ ''.join(v) for v in sorted(result) ]
